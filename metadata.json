@@ -1,0 +1,6 @@
+{
+  "name": "LĂNG MỘ ĐÁ QUẢNG TRỊ - Bia Mộ Đá Mỹ Nghệ Cao Cấp",
+  "description": "Hệ thống quản lý và giới thiệu Bia Mộ Đá Mỹ Nghệ Cao Cấp LĂNG MỘ ĐÁ QUẢNG TRỊ, tích hợp FireCMS admin và Cloudflare R2",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

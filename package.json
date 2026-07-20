@@ -1,0 +1,27 @@
+{
+  "name": "lang-mo-cms-monorepo",
+  "private": true,
+  "type": "module",
+  "workspaces": [
+    "frontend",
+    "firecms-admin",
+    "r2-upload-worker"
+  ],
+  "scripts": {
+    "dev": "cd frontend && npm run dev",
+    "dev:frontend": "cd frontend && npm run dev",
+    "dev:admin": "cd firecms-admin && npm run dev",
+    "build": "cd frontend && npm run build",
+    "start": "node server.ts",
+    "lint": "cd frontend && npm run lint",
+    "build:frontend": "cd frontend && npm install && npm run build",
+    "build:admin": "cd firecms-admin && npm install && npm run build",
+    "deploy:frontend": "npm run build:frontend && npx firebase deploy --only hosting:lang-mo-cms",
+    "deploy:admin": "npm run build:admin && npx firebase deploy --only hosting:lang-mo-cms-admin",
+    "deploy:rules": "npx firebase deploy --only firestore:rules",
+    "deploy:all": "npm run build:frontend && npm run build:admin && npx firebase deploy"
+  },
+  "dependencies": {
+    "lenis": "^1.3.25"
+  }
+}
