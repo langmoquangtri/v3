@@ -1,0 +1,48 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>LĂNG MỘ ĐÁ QUẢNG TRỊ - Bia Mộ Đá Mỹ Nghệ Cao Cấp</title>
+    <script id="safeguard-fetch">
+      (function() {
+        try {
+          const originalFetch = window.fetch;
+          let customFetch = originalFetch;
+          Object.defineProperty(window, 'fetch', {
+            get() { return customFetch; },
+            set(val) { customFetch = val; },
+            configurable: true,
+            enumerable: true
+          });
+        } catch (e) {
+          console.warn("Note: window.fetch is read-only in this environment. Applying safeguards.");
+        }
+
+        const _defineProperty = Object.defineProperty;
+        Object.defineProperty = function(obj, prop, descriptor) {
+          try {
+            return _defineProperty(obj, prop, descriptor);
+          } catch (err) {
+            if (prop === 'fetch') {
+              console.warn("Handled prevented redefine on 'fetch':", err);
+              try {
+                obj[prop] = descriptor.value;
+              } catch (err2) {}
+              return obj;
+            }
+            throw err;
+          }
+        };
+      })();
+    </script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Playfair+Display:ital,wght@0,400..900;1,400..900&display=swap" rel="stylesheet">
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>
+
