@@ -1,0 +1,24 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+
+  "name": "lang-mo-cms-upload",
+  "main": "src/index.ts",
+  "compatibility_date": "2026-07-05",
+
+  "workers_dev": true,
+  "preview_urls": true,
+
+  "r2_buckets": [
+    {
+      "binding": "IMAGES",
+      "bucket_name": "lang-mo-cms-images"
+    }
+  ],
+
+  "vars": {
+    "PUBLIC_BASE_URL": "https://images.langmodaquangtri.com",
+    "FIREBASE_API_KEY": "AIzaSyAT-B3qaiggBIURgQ2KZNxyoOZF3EfDhbw",
+    "ALLOWED_EMAILS": "",
+    "ALLOWED_ORIGINS": "*"
+  }
+}
