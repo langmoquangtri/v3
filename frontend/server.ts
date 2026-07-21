@@ -785,17 +785,38 @@ app.post("/api/contact", async (req, res) => {
 
 // Serve Frontend using Vite Middleware in Dev, or Express Static in Prod
 async function startServer() {
+  const isRootCwd = fs.existsSync(path.join(process.cwd(), "firecms-admin"));
+  const rootDir = isRootCwd ? process.cwd() : path.join(process.cwd(), "..");
+  const adminPath = path.join(rootDir, "firecms-admin");
+  const frontendPath = path.join(rootDir, "frontend");
+
   if (process.env.NODE_ENV !== "production") {
+    // 1. Setup FireCMS Admin Panel Vite dev server under /admin
+    const adminVite = await createViteServer({
+      root: adminPath,
+      base: "/admin/",
+      server: { middlewareMode: true },
+      appType: "spa",
+    });
+    app.use("/admin", adminVite.middlewares);
+
+    // 2. Setup Frontend Website Vite dev server under /
     const vite = await createViteServer({
+      root: frontendPath,
       server: { middlewareMode: true },
       appType: "spa",
     });
     app.use(vite.middlewares);
   } else {
-    let distPath = path.join(process.cwd(), "dist");
-    if (!fs.existsSync(path.join(distPath, "index.html"))) {
-      distPath = path.join(process.cwd(), "frontend", "dist");
-    }
+    // 1. Serve built FireCMS Admin Panel under /admin
+    const adminBuildPath = path.join(adminPath, "build");
+    app.use("/admin", express.static(adminBuildPath));
+    app.get("/admin/*", (req, res) => {
+      res.sendFile(path.join(adminBuildPath, "index.html"));
+    });
+
+    // 2. Serve built Frontend under /
+    const distPath = path.join(frontendPath, "dist");
     app.use(express.static(distPath));
     app.get("*", (req, res) => {
       res.sendFile(path.join(distPath, "index.html"));

@@ -29,6 +29,15 @@ export function HeroParallax({ onContactClick }: HeroParallaxProps) {
   const currentTimeRef = useRef(0);
   const videoDurationRef = useRef(4.93); // Duration is approximately 4.93s
 
+  const [scrollDirection, setScrollDirection] = useState<"up" | "down" | "none">("none");
+  const lastScrollYRef = useRef<number>(0);
+
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      lastScrollYRef.current = window.scrollY;
+    }
+  }, []);
+
   const [showBlueOverlay, setShowBlueOverlay] = useState(false);
 
   const handleTimeUpdate = (e: React.SyntheticEvent<HTMLVideoElement>) => {
@@ -84,6 +93,15 @@ export function HeroParallax({ onContactClick }: HeroParallaxProps) {
       const rect = containerRef.current.getBoundingClientRect();
       const containerHeight = rect.height;
       const windowHeight = window.innerHeight;
+
+      // Track scroll direction
+      const currentScrollY = window.scrollY;
+      if (currentScrollY > lastScrollYRef.current + 5) {
+        setScrollDirection("down");
+      } else if (currentScrollY < lastScrollYRef.current - 5) {
+        setScrollDirection("up");
+      }
+      lastScrollYRef.current = currentScrollY;
 
       // When the top of container is at top of viewport, we start tracking progress
       const totalScrollable = containerHeight - windowHeight;
@@ -295,9 +313,9 @@ export function HeroParallax({ onContactClick }: HeroParallaxProps) {
     }
   }
 
-  // Next section's background color is white so we use that for transition
+  // Next section's transition gradient is changed to black as requested
   const bottomGradientStyle = {
-    background: `linear-gradient(to bottom, transparent 0%, rgba(255, 255, 255, 0.25) 60%, #ffffff 100%)`,
+    background: `linear-gradient(to bottom, transparent 0%, rgba(0, 0, 0, 0.25) 60%, #000000 100%)`,
     opacity: bottomGradientOpacity,
   };
 
@@ -342,22 +360,61 @@ export function HeroParallax({ onContactClick }: HeroParallaxProps) {
           }}
         />
 
-        {/* Text-Readability Radial Overlay */}
+        {/* Text-Readability Full Overlay */}
         <div
           className="absolute inset-0 z-10 pointer-events-none transition-opacity duration-300"
           style={{
-            background: `radial-gradient(
-              circle at center,
-              rgba(255, 255, 255, 0.40) 0%,
-              rgba(255, 255, 255, 0.15) 55%,
-              rgba(255, 255, 255, 0) 80%
-            )`,
+            backgroundColor: "rgba(0, 0, 0, 0.45)",
             opacity: overlayOpacity,
           }}
         />
 
         {/* Brand Text Content Container */}
         <div className="absolute inset-0 z-20 flex flex-col items-center justify-center pb-[32vh] sm:pb-[42vh] lg:pb-0 px-4 pointer-events-none">
+          <style>{`
+            @keyframes ascendUp {
+              from {
+                opacity: 0;
+                transform: translateY(32px);
+              }
+              to {
+                opacity: 1;
+                transform: translateY(0);
+              }
+            }
+            @keyframes ascendDown {
+              from {
+                opacity: 0;
+                transform: translateY(-32px);
+              }
+              to {
+                opacity: 1;
+                transform: translateY(0);
+              }
+            }
+            .animate-ascend-up-heading {
+              animation: ascendUp 1.2s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+            }
+            .animate-ascend-up-subhead {
+              animation: ascendUp 1.2s cubic-bezier(0.16, 1, 0.3, 1) 0.15s forwards;
+              opacity: 0;
+            }
+            .animate-ascend-up-button {
+              animation: ascendUp 1.2s cubic-bezier(0.16, 1, 0.3, 1) 0.3s forwards;
+              opacity: 0;
+            }
+            .animate-ascend-down-heading {
+              animation: ascendDown 1.2s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+            }
+            .animate-ascend-down-subhead {
+              animation: ascendDown 1.2s cubic-bezier(0.16, 1, 0.3, 1) 0.15s forwards;
+              opacity: 0;
+            }
+            .animate-ascend-down-button {
+              animation: ascendDown 1.2s cubic-bezier(0.16, 1, 0.3, 1) 0.3s forwards;
+              opacity: 0;
+            }
+          `}</style>
           <div
             className="text-center transition-all duration-100 ease-out flex flex-col items-center max-w-4xl pointer-events-auto"
             style={{
@@ -367,7 +424,7 @@ export function HeroParallax({ onContactClick }: HeroParallaxProps) {
           >
             {/* Elegant Main Heading */}
             <h1 
-              className="font-serif font-extrabold text-white text-center tracking-normal leading-[1.25] mt-0 mb-3 sm:mb-4 px-2"
+              className={`font-serif font-extrabold text-white text-center tracking-normal leading-[1.25] mt-0 mb-3 sm:mb-4 px-2 ${scrollDirection === "up" ? "animate-ascend-down-heading" : "animate-ascend-up-heading"}`}
               style={{
                 fontSize: "clamp(24px, 5.2vw, 56px)",
               }}
@@ -377,13 +434,13 @@ export function HeroParallax({ onContactClick }: HeroParallaxProps) {
 
             {/* Detailed Subhead */}
             <p
-              className="font-sans font-normal text-white/95 text-center max-w-2xl mb-6 sm:mb-8 text-xs sm:text-base leading-relaxed px-4"
+              className={`font-sans font-normal text-white/95 text-center max-w-2xl mb-6 sm:mb-8 text-xs sm:text-base leading-relaxed px-4 ${scrollDirection === "up" ? "animate-ascend-down-subhead" : "animate-ascend-up-subhead"}`}
             >
               Chuyên tư vấn – thiết kế – thi công các công trình tâm linh: lăng mộ gia đình, khu lăng mộ dòng họ, khu thờ đá..
             </p>
 
             {/* Interactive Action Button */}
-            <div className="flex items-center justify-center mt-2">
+            <div className={`flex items-center justify-center mt-2 ${scrollDirection === "up" ? "animate-ascend-down-button" : "animate-ascend-up-button"}`}>
               <button
                 onClick={onContactClick}
                 className="px-6 py-2.5 sm:px-10 sm:py-3.5 bg-[#0F4577] hover:bg-[#0c3963] text-white font-bold rounded-md shadow-lg transition-all duration-300 pointer-events-auto text-xs sm:text-base border border-[#0F4577] cursor-pointer uppercase tracking-wider"
